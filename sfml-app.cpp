@@ -28,11 +28,11 @@ int main()
     point plat[20];
 
     for (int i = 0; i < 10; i++) {
-        plat[i].x = (rand() % 300);
+        plat[i].x = (rand() % 400);
         plat[i].y = (rand() % 600);
     }
 
-    int x=100, y=550, h=75;
+    int x=100, y=550, h=300;
     float dx=0, dy=0;
     bool firstBounce = true;
 
@@ -53,7 +53,7 @@ int main()
             y = 550;
             dy += 0.5;
             for (int i = 0; i < 10; i++) {
-                plat[i].x = (rand() % 300);
+                plat[i].x = (rand() % 400);
                 plat[i].y = (rand() % 600);
             }
         }
@@ -75,9 +75,20 @@ int main()
         }
         sPlayer.setPosition(x, y);
         app.draw(sPlayer);
+
+        if(y<h) {
+            for(int i = 0; i < 10; i++) {
+                y = h;
+                plat[i].y=plat[i].y-dy;
+                if (plat[i].y>600) {
+                    plat[i].y=0;
+                    plat[i].x=rand() % 400;
+                }
+            }
+        }
+
         for (int i = 0; i < 10; i++) {
             sPlat.setPosition(plat[i].x, plat[i].y);
-            
             app.draw(sPlat);
             if (sPlayer.getPosition().x + player_w >= plat[i].x &&
                 sPlayer.getPosition().x <= plat[i].x + platform_w &&
@@ -85,10 +96,7 @@ int main()
                 sPlayer.getPosition().y <= plat[i].y + platform_h) {
                     dy = -15; 
             }
-            if (sPlayer.getPosition().y <= h) {
-                        plat[i].y += h;
-                        y += h;
-            }
+           
         }
         
         app.display();
