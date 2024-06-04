@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <time.h>
+#include <string>
+using namespace std;
 using namespace sf;
 
 struct point
@@ -23,9 +25,17 @@ int main()
     t1.loadFromFile("./tmpplayer.png");
     t2.loadFromFile("./plat.png");
 
+    int score = 0;
+
     Sprite sPlayer(t1), sPlat(t2);
 
     point plat[20];
+
+    sf::Font font;
+    if (!font.loadFromFile("Roboto-Medium.ttf"))
+        return EXIT_FAILURE;
+    sf::Text scoreText(to_string(score), font, 25);
+    scoreText.setPosition(20.0, 20.0);
 
     for (int i = 0; i < 10; i++) {
         plat[i].x = (rand() % 400);
@@ -56,19 +66,21 @@ int main()
                 plat[i].x = (rand() % 400);
                 plat[i].y = (rand() % 600);
             }
+            score = 0;
+            scoreText.setString(to_string(score));
         }
         if (Keyboard::isKeyPressed(Keyboard::Q)) {
             app.close();
         }
 
-        
-
         if (Keyboard::isKeyPressed(Keyboard::Right) && x < 284) x+=8;
         if (Keyboard::isKeyPressed(Keyboard::Left) && x > 0) x-=8;
         if (Keyboard::isKeyPressed(Keyboard::D) && x < 284) x+=8;
         if (Keyboard::isKeyPressed(Keyboard::A) && x > 0) x-=8;
+
         dy += 0.5;
         y += dy;
+
         if(y > 600 && firstBounce) {
             dy = -15;
             firstBounce = false;
@@ -95,10 +107,13 @@ int main()
                 sPlayer.getPosition().y + player_h >= plat[i].y &&
                 sPlayer.getPosition().y <= plat[i].y + platform_h) {
                     dy = -15; 
+                    score += 1; 
+                    scoreText.setString(to_string(score));
+                    
             }
            
         }
-        
+        app.draw(scoreText);
         app.display();
     }
     return 0;
